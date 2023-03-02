@@ -24,6 +24,11 @@ class Config:
                 self.v2[k + 1] if k < self.m - 1 else 0)
 
         self.c = int(self.v_k[-1,-1])
+
+        self.Machine = {}
+        for i in range(self.c):
+            self.Machine[i] = [k for k in range(self.m) if i in range(self.v_k[k,0],self.v_k[k,1])]
+
         self.o = int(np.product(self.v1+1)*np.product(self.v2+1))
 
     def get_file(self, name, ext='txt'):

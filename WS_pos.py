@@ -17,14 +17,14 @@ def WS_positional_exp(p):
 
     v1 = model.addConstrs((x.sum(i,'*','*')==1 for i in range(cfg.n)), name='v1')
     v2 = model.addConstrs((x.sum('*',j,'*')==1 for j in range(cfg.n)), name='v2')
-    v3 = model.addConstrs((s[1,k+1] == quicksum(p[i,k,l]*x[i,1,l] for i in range(cfg.n) for l in range(cfg.o)) + s[1,k] for k in range(cfg.m-1)), name='v3')
+    v3 = model.addConstrs((s[0,k+1] == quicksum(p[i,k,l]*x[i,0,l] for i in range(cfg.n) for l in range(cfg.o)) + s[0,k] for k in range(cfg.m-1)), name='v3')
     v4 = model.addConstrs((s[j,k+1] >= s[j,k] + quicksum(p[i,k,l]*x[i,j,l] for i in range(cfg.n) for l in range(cfg.o)) for j in range(cfg.n) for k in range(cfg.m-1)), name='v4')
     v5 = model.addConstrs((s[j+1,k] >= s[j,k] + quicksum(p[i,k,l]*x[i,j,l] for i in range(cfg.n) for l in range(cfg.o)) for k in range(cfg.m) for j in range(cfg.n-1)), name='v5')
     v6 = model.addConstrs((s[j,k]>=s[j-1,k+1] for j in range(1,cfg.n) for k in range(cfg.m-1)),name='v6')
 
     model.setObjective(s[cfg.n-1,cfg.m-1]+quicksum(p[i,cfg.m-1,l]*x[i,cfg.n-1,l] for i in range(cfg.n) for l in range(cfg.o)), sense=GRB.MINIMIZE)
 
-    return model
+    return model, x, s
 
 def WS_positional_poly(q):
     # q: dict q[j,k,i] = processing time of operation i of job j on working station k
@@ -56,5 +56,7 @@ def WS_positional_poly(q):
     v6 = model.addConstrs((s[h+1,k]>=s[h,k]+P[h,k] for k in range(cfg.m) for h in range(cfg.n-1)))
     v7 = model.addConstrs((s[h,k]>=s[h-1,k+1] for k in range(cfg.m-1) for h in range(1,cfg.n)))
     v8 = model.addConstrs((y.sum(i,j,'*')==1 for i in range(cfg.c) for j in range(cfg.n)))
+    v9 = model.addConstrs((y[i+1,j,k1]+y[i,j,k2]<=1 for j in range(cfg.n) for i in range(cfg.c-1) for k1 in cfg.Machine[i+1] for k2 in cfg.Machine[i] if k1<k2))
+
     model.setObjective(s[cfg.n-1,cfg.m-1]+P[cfg.n-1,cfg.m-1], sense=GRB.MINIMIZE)
-    return model
+    return model, x, y, s, P

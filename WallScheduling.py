@@ -20,11 +20,11 @@ def WS(p, q, type_):
     t0 = time.time()
 
     if type_=='pos_exp':
-        model = WS_positional_exp(p)
+        model, x, s = WS_positional_exp(p)
     elif type_=='pos_poly':
-        model = WS_positional_poly(q)
+        model, x, y, s, P = WS_positional_poly(q)
     elif type_=='disj_exp':
-        model = WS_disjunctive_exp(p)
+        model, x, y, s, cmax = WS_disjunctive_exp(p)
     else:
         sys.exit(f'Unknown model type {type_}')
     t1 = time.time()

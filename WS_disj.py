@@ -32,4 +32,4 @@ def WS_disjunctive_exp(p):
 
     model.setObjective(cmax, sense=GRB.MINIMIZE)
 
-    return model
+    return model, x, y, s, cmax
