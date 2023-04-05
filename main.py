@@ -8,19 +8,23 @@ from config import cfg
 if __name__ == "__main__":
     cfg.set_seed(-1)
     p, q = read_data()
-    WS(p, q, 'pos_exp')
-    WS(p, q, 'pos_poly')
-    WS(p, q, 'disj_exp')
+    #WS(p, q, 'pos_exp')
+    #WS(p, q, 'pos_poly')
+    #WS(p, q, 'disj_exp')
 
-    n_list = [10, 15, 20, 25]
+    n_list = [10]
 
     for n in n_list:
         cfg.n = n
-        for seed in range(20):
-            cfg.set_seed(n*10+seed)
+        if cfg.processing_times == 'integer':
+            initial_seed = n * 10
+        else:
+            initial_seed = n * 100
+        for seed in range(10):
+            cfg.set_seed(initial_seed+seed)
             p, q = read_data()
-            WS(p, q, 'pos_exp')
+            #WS(p, q, 'pos_exp')
             WS(p, q, 'pos_poly')
-            WS(p, q, 'disj_exp')
+            #WS(p, q, 'disj_exp')
 
 

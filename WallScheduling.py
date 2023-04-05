@@ -3,10 +3,14 @@ import os.path
 import sys
 import time
 import numpy as np
+import pandas as pd
+#from sklearn.linear_model import LinearRegression
 
-from WS_pos import *
-from WS_disj import *
+from WS_pos import WS_positional_poly,WS_positional_exp
+from WS_disj import WS_disjunctive_exp
+from gurobipy import GRB
 from config import cfg
+
 
 def WS(p, q, type_):
     # p: dict p[i,k,l] = processing time of job i con working station k according to cut t
@@ -15,7 +19,7 @@ def WS(p, q, type_):
         log = open(file,'a')
     else:
         log = open(file, 'x')
-        print("seed, n, solving time, total time, objective value, MIP gap, frequent_cuts, cuts_frequency", file=log)
+        print("seed, n, solved, solving time, total time, objective value, MIP gap", file=log)
 
     t0 = time.time()
 
@@ -30,6 +34,16 @@ def WS(p, q, type_):
     t1 = time.time()
 
     model.setParam(GRB.Param.TimeLimit, cfg.timelimit)
+
+    solved=True
+    try:
+        model.update()
+        model.read(cfg.get_file(f'solution_{type_}', 'sol'))
+        model.setParam(GRB.Param.TimeLimit, 1)
+        solved=False
+    except:
+        pass
+
     model.optimize()
 
     t2 = time.time()
@@ -41,6 +55,32 @@ def WS(p, q, type_):
     except:
         pass
 
+    if False:#type_ == 'pos_exp':
+        x_ = model.getAttr('X', x)
+        x_ = pd.DataFrame(index=x_.keys(), data=x_.values()).to_numpy().reshape((cfg.n, cfg.n, cfg.o))
+        cuts_used = np.where(x_>1-1.e-4)
+        jobs_order = np.argsort(cuts_used[1])
+        cuts_order = cuts_used[2][jobs_order]
+        p_order = p[jobs_order, 1:4, cuts_order]
+
+        stats = np.concatenate((cuts_order.reshape((-1,1)), p_order),axis=1)
+        cuts_ranking = []
+        for i in range(cfg.n):
+            cuts_ranking.append(np.where(np.argsort(np.std(p[jobs_order[i],1:4,:],axis=0))==cuts_order[i])[0][0])
+        stats = np.concatenate((stats, np.std(p_order, axis=1).reshape(-1,1), np.array(cuts_ranking).reshape((-1,1))),axis=1)
+        cuts_ranking = []
+        for i in range(cfg.n):
+            cuts_ranking.append(np.where(np.argsort(np.max(p[jobs_order[i],1:4,:],axis=0))==cuts_order[i])[0][0])
+        stats = np.concatenate((stats, np.max(p_order, axis=1).reshape(-1,1), np.array(cuts_ranking).reshape((-1,1))),axis=1)
+
+        """reg = lambda p: LinearRegression().fit(np.array([1,2,3]).reshape(-1,1),p).coef_[0]
+        slope = lambda p: np.array([reg(p[:,i]) for i in range(p.shape[1])])
+        cuts_ranking = []
+        for i in range(cfg.n):
+            cuts_ranking.append(np.where(np.argsort(slope(p[jobs_order[i],1:4,:]))==cuts_order[i])[0][0])
+        stats = np.concatenate((stats, np.max(p_order, axis=1).reshape(-1,1), np.array(cuts_ranking).reshape((-1,1))),axis=1)"""
+
+        np.savetxt(cfg.get_file('cuts_ranking'), stats, fmt='%.2f', header='cut, p2, p3, p4, std(p2,p3,p4), rank_std, max(p2,p3,p4), rank_max')
     """if type_ == 'positional':
         x_ = model.getAttr('X', x)
         s_ = model.getAttr('X', s)
@@ -80,7 +120,7 @@ def WS(p, q, type_):
 
     #frequent_cuts = (np.argsort(cuts_frequency)[::-1])[:len(np.where(cuts_frequency>0)[0])]
     #print(f"Frequent cuts: {frequent_cuts+1}")
-    print(f"{cfg.seed}, {cfg.n}, {t2-t1}, {t2-t0}, {model.getAttr('ObjVal')}, {model.getAttr('MIPGap')}", file=log)
+    print(f"{cfg.seed}, {cfg.n}, {solved}, {t2-t1}, {t2-t0}, {model.getAttr('ObjVal')}, {model.getAttr('MIPGap')}", file=log)
 
 
 def find_order_disjunctive(x_, n):

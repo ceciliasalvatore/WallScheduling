@@ -6,6 +6,8 @@ class Config:
         self.folder = 'data'
 
         self.timelimit = 1800
+        self.processing_times = 'integer'
+        #self.processing_times = 'fractional'
 
         self.seed = -1
         self.n = 20

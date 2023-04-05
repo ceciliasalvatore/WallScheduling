@@ -28,7 +28,10 @@ def generate_instance():
                     m2 = np.random.randint(m1+1, 16)
                 if t >= cfg.v_k[k, 0] and t < cfg.v_k[k, 1]:
                     for i in range(cfg.n):
-                        q[i,k,t] = np.random.randint(m1,m2)
+                        if cfg.processing_times=='integer':
+                            q[i, k, t] = np.random.randint(m1, m2)
+                        else:
+                            q[i,k,t] = np.random.randint(m1,m2)+np.round(np.random.random()*100)/100
                     row += 1
 
     #cuts = np.array(np.meshgrid(*(np.arange((v)[k]) for k in range(m)))).T.reshape(-1,m)+1

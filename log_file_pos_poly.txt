@@ -1,2 +1,1 @@
-seed, n, solving time, total time, objective value, MIP gap
-300, 10, 263.24988889694214, 263.4169602394104, 636.0, 2.1283744351075707e-05
+seed, n, solved, solving time, total time, objective value, MIP gap
