@@ -6,7 +6,6 @@ class Config:
         self.folder = 'data'
 
         self.timelimit = 1800
-        self.processing_times = 'integer'
         self.read_solution = True
 
         self.seed = -1
