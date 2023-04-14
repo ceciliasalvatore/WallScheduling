@@ -28,13 +28,9 @@ def generate_instance():
                     m2 = np.random.randint(m1+1, 16)
                 if t >= cfg.v_k[k, 0] and t < cfg.v_k[k, 1]:
                     for i in range(cfg.n):
-                        if cfg.processing_times=='integer':
-                            q[i, k, t] = np.random.randint(m1, m2)
-                        else:
-                            q[i,k,t] = np.random.randint(m1,m2)+np.round(np.random.random()*100)/100
+                        q[i, k, t] = np.random.randint(m1, m2)
                     row += 1
 
-    #cuts = np.array(np.meshgrid(*(np.arange((v)[k]) for k in range(m)))).T.reshape(-1,m)+1
     cuts_1 = np.array(list(it.product(*(np.arange((cfg.v1+1)[k]) for k in range(cfg.m)))))
     cuts_2 = np.array(list(it.product(*(np.arange((cfg.v2+1)[k]) for k in range(cfg.m)))))
 
@@ -57,17 +53,6 @@ def generate_instance():
             if j >= cfg.v_k[k, 0] and j < cfg.v_k[k, 1]:
                 print(f"op. {j}, machine {k}, p between {np.min(q[:, k, j])} and {np.max(q[:, k, j])}", file=log)
 
-    """seed = None
-    n = 20
-    p_orig, n, m, o = read_data(n, seed)
-
-    for i in range(n):
-        for k in range(m):
-            for l in range(o):
-                #print(f"Job {i}, Machine {k}, Cut {l}: {p_orig[i, k, l]} / {p[i, k, l]}")
-                if p_orig[i, k, l] != p[i, k, l]:
-                    print(f"Job {i}, Machine {k}, Cut {l}: {p_orig[i, k, l]} / {p[i, k, l]}")"""
-
     save_data(p, cfg.n * cfg.m, cfg.o, cfg.get_file('p'))
     save_data(q, cfg.n * cfg.m, cfg.c, cfg.get_file('q'))
 
@@ -76,25 +61,3 @@ def generate_instance():
 def save_data(p, r, c, file):
     matrix = p.reshape((r, c))
     pd.DataFrame(matrix).to_csv(file,header=None,index=None)
-
-
-"""def subsample_data(p, n, m, o, n_star):
-    jobs = np.random.choice(np.arange(n), n_star, replace=False)
-
-    p_star = {}
-    for i in range(n_star):
-        for k in range(m):
-            for l in range(o):
-                p_star[i,k,l] = p[jobs[i],k,l]
-    return p_star, n_star, m, o
-
-
-def perturbate_data(p, n, m, o):
-    p_star = {}
-    for i in range(n):
-        for k in range(m):
-            delta = np.random.choice(np.concatenate((np.arange(-5,0),np.arange(1,6))), 1)[0]
-            for l in range(o):
-                p_star[i,k,l] = p[i,k,l] + delta
-    return p_star, n, m, o"""
-

@@ -13,5 +13,9 @@ def generate_warmstart_q(q):
     operations_order = np.zeros((cfg.n, cfg.c))
     for i in range(cfg.n):
         for j in range(cfg.c):
-            operations_order[i,j] = np.random.choice(cfg.Machine[j],1) # operation_order[i,j]:=k if operation j of job in position i is assigned to machine k
+            if j>=1:
+                candidates = [f for f in cfg.Machine[j] if f>=operations_order[i,j-1]]
+            else:
+                candidates = cfg.Machine[j]
+            operations_order[i,j] = np.random.choice(candidates,1) # operation_order[i,j]:=k if operation j of job in position i is assigned to machine k
     return jobs_order, operations_order

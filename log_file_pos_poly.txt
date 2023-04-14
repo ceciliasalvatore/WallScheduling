@@ -1,1 +1,0 @@
-seed, n, solved, solving time, total time, objective value, MIP gap
