@@ -38,7 +38,7 @@ if __name__ == '__main__':
     kpi_aggregator = {'solvingtime':'mean','MIPgap':'mean','diff_bound':'mean','diff_obj':'mean','is_best':'sum'}
     for key in result_files.keys():
         result_files[key] = result_files[key].groupby('n').agg(kpi_aggregator)
-        result_files[key].to_csv(f'results_{key}.txt')
+        result_files[key].to_csv(f'results_{key}.txt',float_format='%.2f')
 
     for kpi in kpi_aggregator.keys():
         width = 1  # the width of the bars
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 
         # Put a legend to the right of the current axis
-        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        ax.legend()
         plt.xlabel('n')
         plt.xticks(v.index+width*len(result_files.keys())/2-width/2,v.index)
         if kpi == 'solvingtime':
