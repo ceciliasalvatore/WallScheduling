@@ -63,16 +63,16 @@ if __name__ == '__main__':
             plt.title('Solving time')
             plt.ylabel('s')
         if kpi == 'diff_obj':
-            plt.title('Gap from the best solution found')
+            plt.title('Gap from best objective')
             plt.ylabel('%')
             plt.ylim([0,5])
         if kpi == 'diff_bound':
-            plt.title('Gap from the best lower bound found')
+            plt.title('Gap from best bound')
             plt.ylabel('%')
             plt.ylim([0,5])
         if kpi == 'MIPgap':
             plt.title('MIP Gap')
             plt.ylabel('%')
         if kpi == 'is_best':
-            plt.title('Average number of times the best objective is obtained')
+            plt.title('Number of best')
         plt.savefig(f'plot_{kpi}.png')

@@ -4,9 +4,9 @@ from utils import generate_warmstart_p, generate_warmstart_q
 
 from config import cfg
 
-def WS_positional_explicit(p):
+def WS_positional_implicit(p):
     # p: dict p[i,k,l] = processing time of job i con working station k according to cut t
-    print("------------------ POSITIONAL EXPLICIT WALL SCHEDULING MODEL ------------------")
+    print("------------------ POSITIONAL IMPLICIT WALL SCHEDULING MODEL ------------------")
     model = gb.Model()
 
     # x[i,j,l] := 1 if job i is in position j and it executes cut l
@@ -41,10 +41,10 @@ def WS_positional_explicit(p):
     model.remove(init_Constraints)
     return model, x, s
 
-def WS_positional_implicit(q):
+def WS_positional_explicit(q):
     # q: dict q[j,k,i] = processing time of operation i of job j on working station k
 
-    print("------------------ POSITIONAL IMPLICIT WALL SCHEDULING MODEL ------------------")
+    print("------------------ POSITIONAL EXPLICIT WALL SCHEDULING MODEL ------------------")
     model = gb.Model()
 
     # x[j,h] := 1 if job j is in position h

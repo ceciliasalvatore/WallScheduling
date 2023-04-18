@@ -5,10 +5,10 @@ import numpy as np
 
 from config import cfg
 
-def WS_precedence_explicit(p):
+def WS_precedence_implicit(p):
     # p: dict p[i,k,l] = processing time of job i con working station k according to cut t
 
-    print("------------------ PRECEDENCE EXPLICIT WALL SCHEDULING MODEL ------------------")
+    print("------------------ PRECEDENCE IMPLICIT WALL SCHEDULING MODEL ------------------")
 
     model = gb.Model()
 
@@ -60,10 +60,10 @@ def WS_precedence_explicit(p):
 
     return model, x, y, s, cmax
 
-def WS_precedence_implicit(q, p):
+def WS_precedence_explicit(q, p):
     # q: dict q[j,k,i] = processing time of operation i of job j on working station k
 
-    print("------------------ POSITIONAL IMPLICIT WALL SCHEDULING MODEL ------------------")
+    print("------------------ POSITIONAL EXPLICIT WALL SCHEDULING MODEL ------------------")
     model = gb.Model()
 
     M = p.sum(axis=1).max(axis=1).sum()
