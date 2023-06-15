@@ -23,13 +23,13 @@ def WS(p, q, type_):
     t0 = time.time()
 
     if type_=='pos_expl':
-        model, x, s = WS_positional_explicit(p)
+        model, x, y, s, P = WS_positional_explicit(q)
     elif type_=='pos_impl':
-        model, x, y, s, P = WS_positional_implicit(q)
+        model, x, s = WS_positional_implicit(p)
     elif type_=='prec_expl':
-        model, x, y, s, cmax = WS_precedence_explicit(p)
+        model, x, y, s, cmax = WS_precedence_explicit(q, p)
     elif type_=='prec_impl':
-        model, x, y, s, cmax = WS_precedence_implicit(q, p)
+        model, x, y, s, cmax = WS_precedence_implicit(p)
     else:
         sys.exit(f'Unknown model type {type_}')
     t1 = time.time()

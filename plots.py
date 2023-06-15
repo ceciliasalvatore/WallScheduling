@@ -9,7 +9,7 @@ if __name__ == '__main__':
                     'prec_impl':'log_file_prec_impl.txt'}
 
     for key in result_files.keys():
-        result_files[key] = pd.read_csv(result_files[key]).query('solved==True and n>5').set_index(['seed'])
+        result_files[key] = pd.read_csv(result_files[key]).query('solved==True and n>5 and seed!=-1').set_index(['seed'])
     for key in result_files.keys():
         result_files[key]['bound'] = result_files[key]['objectivevalue']*(1-result_files[key]['MIPgap'])
     best = pd.DataFrame(columns=result_files['pos_expl'].columns, index=result_files['pos_expl'].index)
